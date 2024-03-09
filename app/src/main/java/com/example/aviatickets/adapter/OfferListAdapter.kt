@@ -42,12 +42,12 @@ class OfferListAdapter : ListAdapter<Offer, OfferListAdapter.ViewHolder>(OfferDi
 //                    .placeholder(R.drawable.baseline_airplane_ticket_24)
 //                     .into(airlineImage)
 
-                departureTime.text = flight.departureTimeInfo
-                arrivalTime.text = flight.arrivalTimeInfo
+                departureTime.text = flight.departure_time_info
+                arrivalTime.text = flight.arrival_time_info
                 route.text = context.getString(
                     R.string.route_fmt,
-                    flight.departureLocation.code,
-                    flight.arrivalLocation.code
+                    flight.departure_location.code,
+                    flight.arrival_location.code
                 )
                 duration.text = context.getString(
                     R.string.time_fmt,
