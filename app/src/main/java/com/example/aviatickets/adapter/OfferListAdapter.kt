@@ -2,24 +2,15 @@ package com.example.aviatickets.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.aviatickets.R
 import com.example.aviatickets.databinding.ItemOfferBinding
+import com.example.aviatickets.model.OfferDiffCallback
 import com.example.aviatickets.model.entity.Offer
 
-class OfferListAdapter : RecyclerView.Adapter<OfferListAdapter.ViewHolder>() {
-
-    private val items: ArrayList<Offer> = arrayListOf()
-
-    fun setItems(offerList: List<Offer>) {
-        items.clear()
-        items.addAll(offerList)
-        notifyDataSetChanged()
-
-        /**
-         * think about recycler view optimization using diff.util
-         */
-    }
+class OfferListAdapter : ListAdapter<Offer, OfferListAdapter.ViewHolder>(OfferDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -31,12 +22,8 @@ class OfferListAdapter : RecyclerView.Adapter<OfferListAdapter.ViewHolder>() {
         )
     }
 
-    override fun getItemCount(): Int {
-        return items.size
-    }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(getItem(position)) // Use getItem to access the item at a given position
     }
 
     inner class ViewHolder(
@@ -49,6 +36,12 @@ class OfferListAdapter : RecyclerView.Adapter<OfferListAdapter.ViewHolder>() {
             val flight = offer.flight
 
             with(binding) {
+//                Glide
+//                    .with(root.context)
+//                    .load("https://logosandtypes.com/wp-content/uploads/2020/06/air-astana.svg")
+//                    .placeholder(R.drawable.baseline_airplane_ticket_24)
+//                     .into(airlineImage)
+
                 departureTime.text = flight.departureTimeInfo
                 arrivalTime.text = flight.arrivalTimeInfo
                 route.text = context.getString(

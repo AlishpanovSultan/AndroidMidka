@@ -8,11 +8,16 @@ import android.view.ViewGroup
 import com.example.aviatickets.R
 import com.example.aviatickets.adapter.OfferListAdapter
 import com.example.aviatickets.databinding.FragmentOfferListBinding
-import com.example.aviatickets.model.service.FakeService
+import com.example.aviatickets.model.entity.Offer
+import com.example.aviatickets.model.network.ApiClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
 
 
 class OfferListFragment : Fragment() {
-
+    private val client = ApiClient.instance
     companion object {
         fun newInstance() = OfferListFragment()
     }
@@ -37,7 +42,23 @@ class OfferListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupUI()
-        adapter.setItems(FakeService.offerList)
+        getOffers()
+    }
+    private fun getOffers() {
+        val response = client.fetchOfferList()
+        response.enqueue(object : Callback<ArrayList<Offer>> {
+            override fun onResponse(call: Call<ArrayList<Offer>>, response: Response<ArrayList<Offer>>) {
+                val offers = response.body()
+                println("HttpResponse: ${response.body()}")
+                if (offers != null) {
+                    adapter?.submitList(offers)
+                }
+            }
+
+            override fun onFailure(call: Call<ArrayList<Offer>>, t: Throwable) {
+                println("HttpResponse: ${t.message}")
+            }
+        })
     }
 
     private fun setupUI() {
@@ -50,12 +71,18 @@ class OfferListFragment : Fragment() {
                         /**
                          * implement sorting by price
                          */
+                        val sortedOffers = adapter.currentList.sortedBy { it.price }
+                        adapter.submitList(sortedOffers)
+
+
                     }
 
                     R.id.sort_by_duration -> {
                         /**
                          * implement sorting by duration
                          */
+                        val sortedOffers = adapter.currentList.sortedBy { it.flight.duration }
+                        adapter.submitList(sortedOffers)
                     }
                 }
             }
